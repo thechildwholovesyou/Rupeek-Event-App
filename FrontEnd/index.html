@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Join The World</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='./css/style.css'>
+</head>
+<body>
+
+        <div class="form-v8-content">
+            <h2>Create an Account or Sign In</h2>
+            <div class="tab">
+                <button class="tablinks" onclick="openCity(event, 'sign-up')" id="defaultOpen">Sign Up</button>
+                <button class="tablinks" onclick="openCity(event, 'sign-in')">Sign In</button>
+            </div>
+            <form id="register-form" class="form-detail" action="#" method="post">
+                <div class="tabcontent" id="sign-up">
+                    <label class="label">First Name</label>
+
+                    <div class="form-row">
+                        <input type="text" name="firstName" class="input-text" required>
+                    </div>
+                    <div class="form-row">
+                        <label class="label">Last Name</label>
+
+                        <input type="text" name="lastName" class="input-text" required>
+                    </div>
+                    <div class="form-row">
+                        <label class="label">Email</label>
+
+                        <input type="text" name="email" class="input-text" required>
+                    </div>
+                    <div class="form-row">
+                        <label class="label">City</label>
+                        <input type="text" name="city" class="input-text" required>
+                        
+                    </div>
+                    <div class="form-row">
+                        <label class="label">Password</label>
+                        <input type="password" name="password" class="input-text" required>
+                      
+                    </div>
+                    <!-- <div class="form-row">
+                        <label class="label">Interests</label>
+                        <select name="interests" class="input-text" multiple required>
+                            <!-- Interests will be populated here -->
+                        
+                    <div class="form-row-last">
+                        <input type="submit" name="register" class="register" value="Register">
+                    </div>
+                </div>
+            </form>
+            <form id="login-form" class="form-detail" action="#" method="post">
+                <div class="tabcontent" id="sign-in">
+                    <div class="form-row">
+                        <input type="text" name="your_email_1" id="email2" class="input-text" required>
+                        <label class="label">E-Mail</label>
+                        <span class="border"></span>
+                    </div>
+                    <div class="form-row">
+                        <input type="password" name="password_1" id="password2" class="input-text" required>
+                        <label class="label">Password</label>
+                        <span class="border"></span>
+                    </div>
+                    <div class="form-row-last">
+                        <input type="submit" name="login" class="register" id="login" value="Sign In">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+    
+        axios.get('http://localhost:8000/api/interest')
+            .then(response => {
+                const interestsSelect = document.querySelector('select[name="interests"]');
+                const interests = response.data;
+
+                interests.forEach(interest => {
+                    const option = document.createElement('option');
+                    option.value = interest.interestName; 
+                    option.textContent = interest.interestName; 
+                    interestsSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        
+        document.getElementById('register-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+           
+            // const selectedOptions = form.elements['interests'].selectedOptions;
+            // const selectedInterests = Array.from(selectedOptions).map(option => option.value);
+
+            const payload = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                city: formData.get('city'),
+                password: formData.get('password'),
+                // interests: selectedInterests
+            };
+
+            axios.post('http://localhost:8000/api/user', payload)
+                .then(response => {
+                 
+                    console.log('User registered successfully!');
+                
+                    window.location.href = 'event.html';
+                })
+                .catch(error => {
+               
+                    console.error(error);
+                });
+        });
+
+        
+        document.getElementById('login-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            const payload = {
+                email: formData.get('your_email_1'),
+                password: formData.get('password_1')
+            };
+
+            axios.post('http://localhost:8000/api/login', payload)
+                .then(response => {
+                  
+                    console.log('User logged in successfully!');
+              
+                    window.location.href = 'dashboard.html';
+                })
+                .catch(error => {
+                
+                    console.error(error);
+                });
+        });
+    </script>
+    <script>
+        function openCity(evt, cityName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.getElementById("defaultOpen").click();
+    </script>
+    <script src="./js/index.js"></script>
+</body>
+</html>
